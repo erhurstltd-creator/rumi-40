@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<link rel="manifest" href="/manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Rumi 40">
+<meta name="theme-color" content="#FDF6E3">
+<title>Rumi's 40th in Aix</title>
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --cream: #FDF8EC;
+  --peach: #FFEFC2;
+  --pink: #EFC9E4;
+  --lavender: #C9B8ED;
+  --mint: #DCEBC4;
+  --sky: #BFE3F7;
+  --gold: #F5C518;
+  --brown: #8B6914;
+  --dark: #4A3728;
+  --coral: #E8896B;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--cream);
+  color: var(--dark);
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+#splash {
+  position: fixed; inset: 0; z-index: 1000;
+  background: linear-gradient(165deg, #BFE3F7 0%, #CBB3EF 45%, #A98BD4 100%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+#splash.hide { opacity: 0; transform: scale(1.1); pointer-events: none; }
+#splash h1 { font-size: 2.2em; color: #322350; margin-bottom: 8px; text-align: center; padding: 0 20px; }
+#splash .subtitle { font-size: 1.1em; color: #4A3A66; margin-bottom: 30px; padding: 0 30px; text-align: center; }
+#splash .splash-emoji { font-size: 120px; animation: bounce 1s ease infinite; margin-bottom: 20px; }
+#splash button {
+  background: white; border: 3px solid var(--gold); border-radius: 50px;
+  padding: 16px 40px; font-size: 1.2em; color: var(--dark); cursor: pointer;
+  font-weight: 600; box-shadow: 0 4px 15px rgba(255,215,0,0.3);
+  transition: transform 0.2s;
+}
+#splash button:active { transform: scale(0.95); }
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+#app { display: none; height: 100vh; height: 100dvh; flex-direction: column; }
+#app.show { display: flex; }
+
+.header {
+  padding: calc(var(--safe-top) + 10px) 16px 10px;
+  background: linear-gradient(135deg, var(--peach), var(--lavender));
+  text-align: center;
+  flex-shrink: 0;
+}
+.header h2 { font-size: 1.3em; color: var(--dark); }
+
+.tabs {
+  display: flex; background: white; border-bottom: 2px solid var(--peach);
+  flex-shrink: 0;
+}
+.tab {
+  flex: 1; padding: 12px 4px 10px; text-align: center; cursor: pointer;
+  font-size: 0.75em; font-weight: 600; color: #999; border-bottom: 3px solid transparent;
+  transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.tab.active { color: var(--dark); border-bottom-color: var(--coral); }
+.tab-icon { font-size: 1.8em; }
+
+.content {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+.page { display: none; height: 100%; }
+.page.active { display: flex; flex-direction: column; }
+
+.album-container {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; padding: 16px; position: relative;
+}
+.album-frame {
+  background: white; border-radius: 20px; padding: 12px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+  max-width: 90%; position: relative; overflow: hidden;
+}
+.album-frame img {
+  width: 100%; border-radius: 12px; display: block;
+  max-height: 55vh; object-fit: contain;
+}
+.album-caption {
+  text-align: center; padding: 10px 0 4px; font-size: 0.9em;
+  color: #7A6050; font-style: italic;
+}
+.album-empty {
+  background: linear-gradient(135deg, #FFEFC2 0%, #EFC9E4 50%, #C9B8ED 100%);
+  border-radius: 20px; padding: 40px 30px; text-align: center;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12); max-width: 320px;
+  font-size: 1.05em; line-height: 1.6; color: var(--dark);
+}
+.album-empty .big { font-size: 3em; display: block; margin-bottom: 12px; }
+.album-nav {
+  display: flex; justify-content: center; align-items: center; gap: 20px;
+  padding: 16px; flex-shrink: 0;
+}
+.album-btn {
+  width: 50px; height: 50px; border-radius: 50%; border: none;
+  background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  font-size: 1.5em; cursor: pointer; display: flex; align-items: center;
+  justify-content: center; transition: transform 0.2s;
+}
+.album-btn:active { transform: scale(0.9); }
+.album-counter { font-size: 0.9em; color: #999; font-weight: 600; min-width: 60px; text-align: center; }
+.album-dots {
+  display: flex; justify-content: center; gap: 6px; padding-bottom: 8px; flex-wrap: wrap;
+  max-width: 300px; margin: 0 auto;
+}
+.album-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: #ddd; transition: all 0.3s;
+}
+.album-dot.active { background: var(--coral); transform: scale(1.3); }
+
+.game-container {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; padding: 20px; gap: 16px;
+}
+.wheel-wrapper {
+  position: relative; width: 300px; height: 300px;
+}
+.wheel-pointer {
+  position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+  font-size: 2em; z-index: 10; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+.wheel-canvas {
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15), inset 0 0 0 8px white, 0 0 0 4px var(--gold);
+  transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+}
+.spin-btn {
+  background: linear-gradient(135deg, var(--coral), #E76F51);
+  color: white; border: none; border-radius: 50px; padding: 16px 40px;
+  font-size: 1.2em; font-weight: 700; cursor: pointer;
+  box-shadow: 0 4px 15px rgba(255,127,127,0.4);
+  transition: transform 0.2s;
+}
+.spin-btn:active { transform: scale(0.95); }
+.spin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.game-result {
+  background: white; border-radius: 20px; padding: 20px; text-align: center;
+  max-width: 90%; box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  min-height: 80px; display: flex; align-items: center; justify-content: center;
+  font-size: 1em; line-height: 1.5; color: var(--dark);
+}
+.game-result .emoji-big { font-size: 1.5em; display: block; margin-bottom: 8px; }
+.game-category {
+  font-size: 0.75em; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--coral); margin-bottom: 6px;
+}
+
+.confetti-piece {
+  position: fixed; width: 10px; height: 10px; z-index: 999;
+  animation: confettiFall 3s ease forwards;
+  pointer-events: none;
+}
+@keyframes confettiFall {
+  0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+
+.floating-bg {
+  position: fixed; inset: 0; pointer-events: none; z-index: -1; overflow: hidden;
+}
+.floating-item {
+  position: absolute; font-size: 20px; opacity: 0.35;
+  animation: floatUp 20s linear infinite;
+}
+@keyframes floatUp {
+  0% { transform: translateY(110vh) rotate(0deg); }
+  100% { transform: translateY(-10vh) rotate(360deg); }
+}
+
+.quotes-container {
+  display: flex; flex-direction: column; align-items: center; padding: 20px; gap: 20px;
+}
+.quotes-deck {
+  width: 100%; max-width: 340px;
+}
+.quote-card {
+  width: 100%; min-height: 280px; position: relative;
+  background: linear-gradient(135deg, #FFEFC2 0%, #EFC9E4 50%, #C9B8ED 100%);
+  border-radius: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 30px; box-sizing: border-box;
+}
+.quote-text {
+  font-size: 1.15em; font-style: italic; color: #4A3728;
+  line-height: 1.6; text-align: center; margin-bottom: 16px;
+  opacity: 1; transition: opacity 0.3s ease;
+}
+.quote-text.fade { opacity: 0; }
+.quote-source {
+  font-size: 0.85em; color: #8B7355; font-weight: 500;
+  text-align: center; opacity: 1; transition: opacity 0.3s ease;
+}
+.quote-source.fade { opacity: 0; }
+.quotes-controls {
+  display: flex; align-items: center; gap: 20px;
+}
+.quote-btn {
+  background: #FFEFC2; border: none; padding: 10px 20px;
+  border-radius: 20px; font-size: 0.95em; color: #4A3728;
+  font-weight: 600; cursor: pointer;
+}
+.quote-btn:active { transform: scale(0.95); }
+.quote-counter {
+  font-size: 0.9em; color: #8B7355; font-weight: 500;
+}
+.quote-shuffle-btn {
+  background: linear-gradient(135deg, #EFC9E4, #C9B8ED);
+  border: none; padding: 12px 28px; border-radius: 25px;
+  font-size: 1em; color: #4A3728; font-weight: 600;
+  cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.quote-shuffle-btn:active { transform: scale(0.95); }
+
+.tab { flex: 1; min-width: 0; }
+.tab span:last-child { font-size: 0.7em; }
+</style>
+</head>
+<body>
+
+<div class="floating-bg" id="floatingBg"></div>
+
+<div id="splash">
+  <div class="splash-emoji">&#x1F33B;</div>
+  <h1>Happy 40th, Rumi! &#x1F49C;</h1>
+  <p class="subtitle">A little gift for your week in Aix-en-Provence &#x2600;&#xFE0F; with all our love</p>
+  <button onclick="openApp()">Open Your Gift &#x1F381;</button>
+</div>
+
+<div id="app">
+  <div class="header">
+    <h2>&#x1FABB; Rumi's 40th in Aix &#x1FABB;</h2>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('album')" id="tab-album">
+      <span class="tab-icon">&#x1F4F8;</span>
+      <span>Album</span>
+    </div>
+    <div class="tab" onclick="switchTab('game')" id="tab-game">
+      <span class="tab-icon">&#x1F3A1;</span>
+      <span>Game</span>
+    </div>
+    <div class="tab" onclick="switchTab('quotes')" id="tab-quotes">
+      <span class="tab-icon">&#x2728;</span>
+      <span>Wisdom</span>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="page active" id="page-album">
+      <div class="album-container" id="albumContainer">
+        <div class="album-frame" id="albumFrame">
+          <img id="albumImg" src="" alt="Family photo">
+          <div class="album-caption" id="albumCaption"></div>
+        </div>
+      </div>
+      <div class="album-dots" id="albumDots"></div>
+      <div class="album-nav" id="albumNav">
+        <button class="album-btn" onclick="prevPhoto()">&#x25C0;</button>
+        <span class="album-counter" id="albumCounter"></span>
+        <button class="album-btn" onclick="nextPhoto()">&#x25B6;</button>
+      </div>
+    </div>
+
+    <div class="page" id="page-game">
+      <div class="game-container">
+        <div class="wheel-wrapper">
+          <div class="wheel-pointer">&#x25BC;</div>
+          <canvas class="wheel-canvas" id="wheelCanvas" width="300" height="300"></canvas>
+        </div>
+        <button class="spin-btn" id="spinBtn" onclick="spinWheel()">&#x1F33B; Spin the Sunflower! &#x1F33B;</button>
+        <div class="game-result" id="gameResult">
+          <div>Spin the wheel to get a question!<br>
+          <small>(Everyone answers. No dodging. Birthday girl's rules.)</small></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page" id="page-quotes">
+      <div class="quotes-container">
+        <div class="quotes-deck" id="quotesDeck">
+          <div class="quote-card" id="quoteCard">
+            <div class="quote-text" id="quoteText"></div>
+            <div class="quote-source" id="quoteSource"></div>
+          </div>
+        </div>
+        <div class="quotes-controls">
+          <button class="quote-btn" onclick="prevQuote()">&#x25C0; Prev</button>
+          <span class="quote-counter" id="quoteCounter"></span>
+          <button class="quote-btn" onclick="nextQuote()">Next &#x25B6;</button>
+        </div>
+        <button class="quote-shuffle-btn" onclick="shuffleQuotes()">&#x1F500; Shuffle</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Family photos go here as data URIs (added once Emma shares them), with one caption per photo.
+const PHOTOS = [
+];
+
+const CAPTIONS = [
+];
+
+// Shuffle photo/caption pairs into a fresh order on every open
+(function() {
+  const order = [...PHOTOS.keys()];
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  const p = order.map(i => PHOTOS[i]);
+  const c = order.map(i => CAPTIONS[i]);
+  PHOTOS.length = 0; PHOTOS.push(...p);
+  CAPTIONS.length = 0; CAPTIONS.push(...c);
+})();
+
+// ===== ALBUM =====
+let currentPhoto = 0;
+
+function initAlbum() {
+  if (PHOTOS.length === 0) {
+    document.getElementById('albumContainer').innerHTML =
+      '<div class="album-empty"><span class="big">&#x1F4F8;</span>' +
+      'Family photos are on their way...<br>check back very soon! &#x1F49C;</div>';
+    document.getElementById('albumNav').style.display = 'none';
+    return;
+  }
+  const dots = document.getElementById('albumDots');
+  dots.innerHTML = PHOTOS.map((_, i) =>
+    `<div class="album-dot ${i === 0 ? 'active' : ''}" onclick="goToPhoto(${i})"></div>`
+  ).join('');
+  showPhoto(0);
+}
+
+function showPhoto(idx) {
+  currentPhoto = idx;
+  const img = document.getElementById('albumImg');
+  img.style.opacity = '0';
+  setTimeout(() => {
+    img.src = PHOTOS[idx];
+    img.style.opacity = '1';
+    img.style.transition = 'opacity 0.3s';
+  }, 150);
+  document.getElementById('albumCaption').textContent = CAPTIONS[idx % CAPTIONS.length];
+  document.getElementById('albumCounter').textContent = `${idx + 1} / ${PHOTOS.length}`;
+  document.querySelectorAll('.album-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+}
+
+function nextPhoto() { showPhoto((currentPhoto + 1) % PHOTOS.length); }
+function prevPhoto() { showPhoto((currentPhoto - 1 + PHOTOS.length) % PHOTOS.length); }
+function goToPhoto(i) { showPhoto(i); }
+
+let touchStartX = 0;
+document.getElementById('page-album').addEventListener('touchstart', e => {
+  touchStartX = e.touches[0].clientX;
+});
+document.getElementById('page-album').addEventListener('touchend', e => {
+  if (PHOTOS.length === 0) return;
+  const diff = touchStartX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 50) { diff > 0 ? nextPhoto() : prevPhoto(); }
+});
+
+// ===== GAME =====
+const CATEGORIES = [
+  { name: "Would You Rather", color: "#EFC9E4", emoji: "🤔" },
+  { name: "Turning 40", color: "#DCEBC4", emoji: "🎂" },
+  { name: "Foodie", color: "#FFEFC2", emoji: "🍽️" },
+  { name: "World & Culture", color: "#BFE3F7", emoji: "🌍" },
+  { name: "Deep Dive", color: "#C9B8ED", emoji: "🔮" },
+  { name: "Quick Fire", color: "#F6D186", emoji: "⚡" },
+];
+
+const QUESTIONS = {
+  "Would You Rather": [
+    "Would you rather have Rafsy's ears for a day or his fluffy tail permanently?",
+    "Would you rather Rafsy could talk (and definitely roast us all) or that he could text?",
+    "Would you rather Rafsy came to Aix and complained the ENTIRE time, or stayed home and destroyed exactly one carpet?",
+    "Would you rather only be able to hop everywhere like Rafsy or only communicate by nose twitches?",
+    "Would you rather Nadiya's first proper word be 'Rumi' or her first steps be towards you?",
+    "Would you rather do Nadiya's 3am wake-ups for a month or let her redecorate your living room with yoghurt once?",
+    "Would you rather Nadiya inherits your laugh or your dance moves?",
+    "Would you rather give up Cheetos forever or give up TV for a year?",
+    "Would you rather eat only Cheetos for a week or do reformer pilates twice a day for a month?",
+    "Would you rather your pilates instructor moves in next door or a French bakery opens downstairs?",
+    "Would you rather binge one series forever or get one new episode of everything each week?",
+    "Would you rather never rewatch your favourite show again or only ever rewatch it?",
+    "Would you rather give up chocolate forever or give up cheese forever?",
+    "Would you rather only eat starters forever or only desserts?",
+    "Would you rather speak fluent French for a week or fluent Swahili forever?",
+    "Would you rather live in a Provence farmhouse with no wifi or a city flat with no balcony?",
+    "Would you rather have a pool but no aircon all summer, or aircon but no pool?",
+    "Would you rather it's 40°C all week or 18°C and cloudy?",
+    "Would you rather swim in the Med every day or fresh croissants every morning — never both?",
+    "Would you rather be chased by one giant angry baguette or 100 tiny furious croissants?",
+    "Would you rather have a lavender field or a sunflower field behind the house?",
+    "Would you rather always hear the gossip a week late, or be the person everyone tells first — but you can't tell anyone?",
+    "Would you rather Sunday lunch with the whole family every week, or one big month-long family holiday a year?",
+    "Would you rather be 40 forever or relive one year of your 30s on repeat?"
+  ],
+  "Turning 40": [
+    "What's the best piece of advice you've picked up in 40 years?",
+    "Which birthday do you remember most fondly — and why?",
+    "What would 20-year-old Rumi be most surprised to learn about your life now?",
+    "What's something you're better at now than you were at 30?",
+    "Which friendship has shaped you the most?",
+    "What's your happiest family memory?",
+    "What do you know now that you wish you'd known at 25?",
+    "What's the kindest thing anyone has ever done for you?",
+    "What little everyday moment makes you happiest?",
+    "What are you most grateful for as you start this decade?",
+    "What's something brave you did that nobody gives you credit for?",
+    "If your 40s had a motto, what would it be?",
+    "What's one thing you want to learn in your 40s?",
+    "Who in your life always makes you laugh — and what's the classic story?",
+    "What family tradition do you hope Nadiya grows up loving?",
+    "What's the best meal you've eaten in 40 years — and who were you with?",
+    "What song takes you straight back to being 18?",
+    "What's a moment from this past year you'd bottle and keep?",
+    "What would a perfect ordinary Tuesday look like in your 40s?",
+    "What do you hope we're all doing together for your 50th?"
+  ],
+  "Foodie": [
+    "What would be your 3 desert island condiments?",
+    "Pick ONE drink for the rest of your life — hot or cold. That's it. Forever.",
+    "One baked good for the rest of your life. Choose wisely.",
+    "French fries: eat ONLY fries forever, or never have a single fry again?",
+    "Cheetos: crunchy or puffs? Defend your answer like it matters. (It matters.)",
+    "You can only save one: Cheetos or crisps. The other vanishes forever.",
+    "What food do you secretly judge people for eating?",
+    "What's a food you hated as a child but love now?",
+    "If you opened a restaurant, what would it serve and what would you call it?",
+    "What's the best thing you've ever eaten on a trip?",
+    "First thing you're ordering at an Aix café?",
+    "Rank these: croissant, pain au chocolat, baguette with salted butter, crêpe. Defend your answer.",
+    "What French dish have you never tried but want to?",
+    "Cheese course or dessert — you can only have one all week?",
+    "Build your ultimate Provence picnic basket — five items only.",
+    "What's the weirdest food combination you actually enjoy?",
+    "What's a food everyone raves about that you secretly think is just fine?",
+    "A Provence market will sell you an unlimited lifetime supply of ONE thing. What is it?",
+    "What's the one dish from Dar es Salaam you'd airlift to Aix right now?",
+    "What's the dish that tastes like home?",
+    "What food would Rafsy order at a restaurant? (Besides coriander, obviously.)",
+    "If Nadiya could only inherit one family recipe, which should it be?"
+  ],
+  "World & Culture": [
+    "If you could only ever holiday in one country, which would it be?",
+    "If you could live anywhere on earth, where would it be and why?",
+    "What tiny village or town have you been to that you still think about?",
+    "Which fictional character would you most like to meet? Why?",
+    "Which fictional character would you most like to BE? Why?",
+    "What city surprised you the most when you visited?",
+    "What's the best thing about life in Dar es Salaam that visitors never expect?",
+    "Zanzibar beaches or Provence lavender fields — which wins, honestly?",
+    "Where in the world would you take Rafsy on holiday if he could fly?",
+    "If you could time-travel to any era, when and where would you go?",
+    "You can teleport somewhere just for dinner tonight, back by midnight. Where?",
+    "You have to give a 10-minute talk with zero prep about one place. Which place?",
+    "Café terrace, market square or beach promenade — pick your people-watching spot?",
+    "Markets, museums, beaches or vineyards — put them in order for this week.",
+    "What's the best road trip you've ever done?",
+    "If you lived in France for one year, which town or village would you pick?",
+    "What's one French habit you'd steal and take home?",
+    "Cézanne painted Mont Sainte-Victoire, just outside Aix, more than 80 times. What view could YOU never get bored of?",
+    "You plan one full day in Aix with zero input from anyone else. What's the itinerary?",
+    "What's a place you'd go back to tomorrow, no planning needed?",
+    "Which country's way of life actually suits you best — and is it the one you live in?"
+  ],
+  "Deep Dive": [
+    "Who's had the biggest influence on how you think — and would they know it?",
+    "What part of your life right now would 18-year-old you be most impressed by?",
+    "What's the bravest thing you've ever done?",
+    "What are you most proud of that nobody knows about?",
+    "What are you most hoping to feel by the end of this week?",
+    "What's a small moment from the last year you keep thinking about?",
+    "What are you most looking forward to in the next five years?",
+    "If this past year had a chapter title, what would it be?",
+    "What do you hope people say about you when you're not in the room?",
+    "What's one thing you'd tell 25-year-old you?",
+    "When did you last feel completely relaxed — and how do we get you there more often?",
+    "What's the most controversial opinion you hold right now?",
+    "What commonly held belief do you NOT agree with?",
+    "What's something you've changed your mind about in the last ten years?",
+    "When do you feel most like yourself?",
+    "What's a compliment about your character — not anything you did — that has stuck with you?",
+    "If you could give everyone at this table one quality of yours, which would you pick?",
+    "What does a rich life mean to you? (No money answers allowed.)",
+    "What's the thing that's worrying you most at the minute?"
+  ],
+  "Quick Fire": [
+    "Favourite season?",
+    "What superpower would you most like to have?",
+    "Beach or pool?",
+    "Pain au chocolat or croissant? No saying both.",
+    "Name 3 French foods in 10 seconds. GO!",
+    "Sunflowers or lavender?",
+    "First thing you do when you arrive: pool, fridge or nap?",
+    "Best snack of all time? (Anyone answering 'not Cheetos' will be asked to leave.)",
+    "One song that always gets you dancing?",
+    "What's your karaoke song? No overthinking!",
+    "If Rafsy wrote a memoir, what would the title be?",
+    "What would Rafsy's French name be?",
+    "Rafsy's Provence job: lavender farmer, market seller or boules hustler?",
+    "Nadiya's first proper word: place your bets NOW.",
+    "What will Nadiya be when she grows up? First answer only!",
+    "Name 5 TV shows you've finished, in 15 seconds. GO!",
+    "Reformer pilates or a massage — you can only keep one forever?",
+    "Market morning or lazy morning?",
+    "Croissant count for the week: what's your honest prediction?",
+    "One word for how you want your 40s to feel. GO!"
+  ]
+};
+
+let isSpinning = false;
+let currentRotation = 0;
+
+function drawWheel() {
+  const canvas = document.getElementById('wheelCanvas');
+  const ctx = canvas.getContext('2d');
+  const cx = 150, cy = 150, r = 145;
+  const sliceAngle = (2 * Math.PI) / CATEGORIES.length;
+
+  ctx.clearRect(0, 0, 300, 300);
+
+  CATEGORIES.forEach((cat, i) => {
+    const startAngle = i * sliceAngle - Math.PI / 2;
+    const endAngle = startAngle + sliceAngle;
+
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, startAngle, endAngle);
+    ctx.closePath();
+    ctx.fillStyle = cat.color;
+    ctx.fill();
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    const midAngle = startAngle + sliceAngle / 2;
+    ctx.rotate(midAngle);
+    const flip = Math.cos(midAngle) < 0;
+    if (flip) ctx.rotate(Math.PI);
+    const dir = flip ? -1 : 1;
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#4A3728';
+    ctx.font = 'bold 13px -apple-system, sans-serif';
+    ctx.fillText(cat.emoji, dir * r * 0.55, 5);
+    ctx.font = '11px -apple-system, sans-serif';
+
+    const words = cat.name.split(' ');
+    if (words.length > 1) {
+      ctx.fillText(words[0], dir * r * 0.75, -3);
+      ctx.fillText(words.slice(1).join(' '), dir * r * 0.75, 10);
+    } else {
+      ctx.fillText(cat.name, dir * r * 0.75, 4);
+    }
+    ctx.restore();
+  });
+
+  ctx.beginPath();
+  ctx.arc(cx, cy, 25, 0, 2 * Math.PI);
+  ctx.fillStyle = 'white';
+  ctx.fill();
+  ctx.strokeStyle = '#F5C518';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+  ctx.fillStyle = '#4A3728';
+  ctx.font = 'bold 18px -apple-system, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('40', cx, cy);
+}
+
+function spinWheel() {
+  if (isSpinning) return;
+  isSpinning = true;
+  document.getElementById('spinBtn').disabled = true;
+
+  const extraSpins = 5 + Math.floor(Math.random() * 5);
+  const randomAngle = Math.random() * 360;
+  const totalRotation = extraSpins * 360 + randomAngle;
+  currentRotation += totalRotation;
+
+  const canvas = document.getElementById('wheelCanvas');
+  canvas.style.transform = `rotate(${currentRotation}deg)`;
+
+  setTimeout(() => {
+    isSpinning = false;
+    document.getElementById('spinBtn').disabled = false;
+
+    const normalizedAngle = (360 - (currentRotation % 360)) % 360;
+    const sliceAngle = 360 / CATEGORIES.length;
+    const catIndex = Math.floor(normalizedAngle / sliceAngle);
+    const category = CATEGORIES[catIndex];
+
+    const questions = QUESTIONS[category.name];
+    const question = questions[Math.floor(Math.random() * questions.length)];
+
+    document.getElementById('gameResult').innerHTML =
+      `<div><div class="game-category">${category.emoji} ${category.name}</div>${question}</div>`;
+
+    spawnConfetti();
+  }, 4200);
+}
+
+function spawnConfetti() {
+  const colors = ['#EFC9E4', '#C9B8ED', '#DCEBC4', '#FFEFC2', '#F5C518', '#BFE3F7'];
+  for (let i = 0; i < 30; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + 'vw';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    piece.style.width = (6 + Math.random() * 8) + 'px';
+    piece.style.height = (6 + Math.random() * 8) + 'px';
+    piece.style.animationDuration = (2 + Math.random() * 2) + 's';
+    piece.style.animationDelay = (Math.random() * 0.5) + 's';
+    document.body.appendChild(piece);
+    setTimeout(() => piece.remove(), 4000);
+  }
+}
+
+// ===== NAVIGATION =====
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.getElementById('page-' + name).classList.add('active');
+}
+
+// ===== SPLASH & INIT =====
+function openApp() {
+  document.getElementById('splash').classList.add('hide');
+  setTimeout(() => {
+    document.getElementById('splash').style.display = 'none';
+    document.getElementById('app').classList.add('show');
+    initAlbum();
+    drawWheel();
+  }, 800);
+}
+
+function initFloatingBg() {
+  const emojis = ['🪻', '💜', '🌻', '🍋', '☀️', '🥐', '🎂', '✨', '🐇'];
+  const bg = document.getElementById('floatingBg');
+  for (let i = 0; i < 15; i++) {
+    const item = document.createElement('div');
+    item.className = 'floating-item';
+    item.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    item.style.left = Math.random() * 100 + '%';
+    item.style.animationDelay = Math.random() * 20 + 's';
+    item.style.animationDuration = (15 + Math.random() * 15) + 's';
+    item.style.fontSize = (14 + Math.random() * 16) + 'px';
+    bg.appendChild(item);
+  }
+}
+
+initFloatingBg();
+
+// ===== QUOTES =====
+const QUOTES = [
+  { text: "You only need to see one white crow to know not all crows are black. You only need one small sign of improvement to give you faith.", source: "Dr Lucas, Spero Clinic" },
+  { text: "Actions always prove why words mean nothing.", source: "Anonymous" },
+  { text: "Don't say anything that's not true, kind and useful. Not many things are all three.", source: "Martha Beck" },
+  { text: "Do what you do as if there was no one left on earth to talk about it with.", source: "Derek Sivers" },
+  { text: "How are you complicit in creating the conditions you say you do not want?", source: "Tim Ferriss interview question" },
+  { text: "You never really understand someone until you can see things from their point of view.", source: "Atticus, To Kill a Mockingbird" },
+  { text: "If one wants to broaden one's horizons, one must venture beyond the horizon.", source: "Nina, A Gentleman in Moscow" },
+  { text: "Being with the wrong person is far more lonely than being alone.", source: "Derek Sivers, How to Live" },
+  { text: "If you have the freedom to say no, you really don't need any more.", source: "Gregory David Roberts, Shantaram" },
+  { text: "Can the past help the present? Can the dead save the living?", source: "Han Kang, We Do Not Part" },
+  { text: "Did you make someone feel seen or heard today?", source: "Jessica Lahey" },
+  { text: "You need to have enough comfort to leave your comfort zone.", source: "Dr Andrea Oskis, The Kitchen Shrink" },
+  { text: "Beneath all anger is a sadness.", source: "White Lotus, Season 3" },
+  { text: "Listen in a way that people want to talk to you. Speak in a way that people want to listen.", source: "Alison Quest, Intelligent Emotion" },
+  { text: "No is a complete sentence. Do not expand.", source: "Anonymous" },
+  { text: "Don't take criticism from someone you wouldn't take advice from.", source: "Anonymous" },
+  { text: "More people are defeated by blisters than by mountains. Take care of the small things.", source: "Kevin Kelly" },
+  { text: "People that matter don't mind. People that mind don't matter.", source: "Tim Ferriss" },
+  { text: "Yesterday I was clever, so I wanted to change the world. Today I am wise, so I am changing myself.", source: "attributed to Rumi" },
+  { text: "What you seek is seeking you.", source: "attributed to Rumi" },
+  { text: "You are not a drop in the ocean. You are the entire ocean in a drop.", source: "attributed to Rumi" },
+  { text: "It is only with the heart that one can see rightly; what is essential is invisible to the eye.", source: "Antoine de Saint-Exupéry, The Little Prince" },
+  { text: "The greatest thing in the world is to know how to belong to oneself.", source: "Michel de Montaigne" },
+  { text: "He who knows he has enough is rich.", source: "Lao Tzu, Tao Te Ching" },
+  { text: "When you realise there is nothing lacking, the whole world belongs to you.", source: "attributed to Lao Tzu" },
+  { text: "It is not the man who has too little, but the man who craves more, that is poor.", source: "Seneca, Letters from a Stoic" },
+  { text: "Wealth consists not in having great possessions, but in having few wants.", source: "attributed to Epictetus" },
+  { text: "Very little is needed to make a happy life; it is all within yourself, in your way of thinking.", source: "attributed to Marcus Aurelius" },
+  { text: "To be beautiful means to be yourself. You don't need to be accepted by others. You need to accept yourself.", source: "Thich Nhat Hanh" },
+  { text: "The present moment is the only moment available to us, and it is the door to all moments.", source: "Thich Nhat Hanh" },
+  { text: "You are the sky. Everything else — it's just the weather.", source: "Pema Chödrön" },
+  { text: "We're all just walking each other home.", source: "Ram Dass" },
+  { text: "Tell me, what is it you plan to do with your one wild and precious life?", source: "Mary Oliver, The Summer Day" },
+  { text: "People will forget what you said, people will forget what you did, but people will never forget how you made them feel.", source: "attributed to Maya Angelou" },
+  { text: "Whoever is happy will make others happy too.", source: "Anne Frank" },
+  { text: "If this isn't nice, I don't know what is.", source: "Kurt Vonnegut (his uncle Alex's saying)" },
+  { text: "There are always flowers for those who want to see them.", source: "attributed to Henri Matisse" },
+  { text: "Love many things, for therein lies the true strength; and whosoever loves much performs much.", source: "Vincent van Gogh, letter to his brother Theo" },
+  { text: "The day is coming when a single carrot, freshly observed, will set off a revolution.", source: "attributed to Paul Cézanne, painter of Aix" },
+  { text: "The reason people find it so hard to be happy is that they always see the past better than it was, the present worse than it is, and the future less resolved than it will be.", source: "attributed to Marcel Pagnol, writer of Provence" },
+  { text: "Now and then it's good to pause in our pursuit of happiness and just be happy.", source: "attributed to Guillaume Apollinaire" },
+  { text: "The greatest gift you ever give is your honest self.", source: "Fred Rogers" },
+  { text: "Talk to yourself like you would to someone you love.", source: "Brené Brown" },
+  { text: "The thing that is really hard, and really amazing, is giving up on being perfect and beginning the work of becoming yourself.", source: "Anna Quindlen" },
+  { text: "You can't stop the waves, but you can learn to surf.", source: "Jon Kabat-Zinn" },
+  { text: "Life isn't about waiting for the storm to pass; it's about learning to dance in the rain.", source: "attributed to Vivian Greene" },
+  { text: "I wish I could show you, when you are lonely or in darkness, the astonishing light of your own being.", source: "attributed to Hafiz" },
+  { text: "Be yourself; everyone else is already taken.", source: "attributed to Oscar Wilde" },
+  { text: "It is never too late to be what you might have been.", source: "attributed to George Eliot" },
+  { text: "The highest form of wealth is deciding you have enough.", source: "Kevin Kelly, 101 Additional Advices" },
+  { text: "Discover people whom you love doing 'nothing' with, and do nothing with them on a regular basis.", source: "Kevin Kelly, 101 Additional Advices" },
+  { text: "The cheapest therapy is to spend time with people who make you laugh.", source: "Kevin Kelly, 101 Additional Advices" },
+  { text: "Try to define yourself by what you love and embrace, rather than what you hate and refuse.", source: "Kevin Kelly, 101 Additional Advices" },
+  { text: "Being envious is a toxin. Instead take joy in the success of others.", source: "Kevin Kelly, 101 Additional Advices" },
+  { text: "If you are more fortunate than others, build a longer table rather than a taller fence.", source: "Kevin Kelly, 101 Additional Advices" },
+  { text: "What others want from you is mostly to be seen. Let others know you see them.", source: "Kevin Kelly, 101 Additional Advices" },
+  { text: "There is a profound difference between thinking less of yourself, and thinking of yourself less.", source: "Kevin Kelly, 101 Additional Advices" },
+  { text: "The surest way to be successful is to invent your own definition of success.", source: "Kevin Kelly, 101 Additional Advices" },
+  { text: "You are your best thing.", source: "Toni Morrison, Beloved" },
+  { text: "Pole pole ndio mwendo — slowly, slowly is indeed the way.", source: "Swahili proverb" },
+  { text: "Petit à petit, l'oiseau fait son nid — little by little, the bird builds its nest.", source: "French proverb" },
+  { text: "The more you praise and celebrate your life, the more there is in life to celebrate.", source: "attributed to Oprah Winfrey" },
+  { text: "Today you are You, that is truer than true. There is no one alive who is Youer than You.", source: "Dr. Seuss, Happy Birthday to You!" },
+];
+
+let currentQuoteIndex = 0;
+let quotesOrder = [...Array(QUOTES.length).keys()];
+
+function showQuote(idx) {
+  const q = QUOTES[quotesOrder[idx]];
+  const textEl = document.getElementById('quoteText');
+  const sourceEl = document.getElementById('quoteSource');
+  textEl.textContent = '“' + q.text + '”';
+  sourceEl.textContent = '— ' + q.source;
+  document.getElementById('quoteCounter').textContent = (idx + 1) + ' / ' + QUOTES.length;
+}
+
+function fadeToQuote(idx) {
+  const textEl = document.getElementById('quoteText');
+  const sourceEl = document.getElementById('quoteSource');
+  textEl.classList.add('fade');
+  sourceEl.classList.add('fade');
+  setTimeout(() => {
+    showQuote(idx);
+    textEl.classList.remove('fade');
+    sourceEl.classList.remove('fade');
+  }, 300);
+}
+
+function nextQuote() {
+  currentQuoteIndex = (currentQuoteIndex + 1) % QUOTES.length;
+  fadeToQuote(currentQuoteIndex);
+}
+
+function prevQuote() {
+  currentQuoteIndex = (currentQuoteIndex - 1 + QUOTES.length) % QUOTES.length;
+  fadeToQuote(currentQuoteIndex);
+}
+
+function shuffleQuotes() {
+  for (let i = quotesOrder.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [quotesOrder[i], quotesOrder[j]] = [quotesOrder[j], quotesOrder[i]];
+  }
+  currentQuoteIndex = 0;
+  fadeToQuote(0);
+}
+
+// Init quotes on load
+document.addEventListener('DOMContentLoaded', () => {
+  showQuote(0);
+});
+
+// Service Worker
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js").catch(() => {});
+}
+</script>
+</body>
+</html>
