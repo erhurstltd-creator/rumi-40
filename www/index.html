@@ -7,32 +7,37 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Rumi 40">
-<meta name="theme-color" content="#FDF6E3">
+<meta name="theme-color" content="#FFDFF0">
 <title>Rumi's 40th</title>
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
 <link rel="apple-touch-icon" sizes="192x192" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
 :root {
-  --cream: #FDF8EC;
-  --peach: #FFEFC2;
-  --pink: #EFC9E4;
+  --cream: #FFF8F3;
+  --blush: #FFE1EE;
+  --pink: #F9A8D4;
+  --hotpink: #EC4899;
   --lavender: #C9B8ED;
-  --mint: #DCEBC4;
-  --sky: #BFE3F7;
+  --purple: #8B5CF6;
+  --plum: #4C2A6E;
+  --ink: #43305C;
   --gold: #F5C518;
-  --brown: #8B6914;
-  --dark: #4A3728;
-  --coral: #E8896B;
+  --peach: #FFE9C7;
+  --sky: #C7E6F7;
+  --mint: #DCEBC4;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: var(--cream);
-  color: var(--dark);
+  color: var(--ink);
   min-height: 100vh;
   min-height: 100dvh;
   overflow: hidden;
@@ -41,81 +46,169 @@ body {
   height: 100%;
 }
 
+/* ===== SPLASH ===== */
 #splash {
   position: fixed; inset: 0; z-index: 1000;
-  background: linear-gradient(165deg, #BFE3F7 0%, #CBB3EF 45%, #A98BD4 100%);
+  background: linear-gradient(160deg, #FFD3E9 0%, #E7D9FA 40%, #CDE9FB 78%, #FFE9C7 110%);
+  background-size: 220% 220%;
+  animation: gradientShift 14s ease infinite;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   transition: opacity 0.8s ease, transform 0.8s ease;
+  overflow: hidden;
 }
-#splash.hide { opacity: 0; transform: scale(1.1); pointer-events: none; }
-#splash h1 { font-size: 2.2em; color: #322350; margin-bottom: 8px; text-align: center; padding: 0 20px; }
-#splash .subtitle { font-size: 1.1em; color: #4A3A66; margin-bottom: 30px; padding: 0 30px; text-align: center; }
-#splash .splash-emoji { font-size: 120px; animation: bounce 1s ease infinite; margin-bottom: 20px; }
+#splash.hide { opacity: 0; transform: scale(1.08); pointer-events: none; }
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+}
+.splash-balloons { position: absolute; inset: 0; pointer-events: none; }
+.splash-balloon {
+  position: absolute; bottom: -12%;
+  animation: rise linear infinite;
+  opacity: 0.85;
+}
+@keyframes rise {
+  0%   { transform: translate(0, 0) rotate(-4deg); }
+  25%  { transform: translate(14px, -34vh) rotate(4deg); }
+  50%  { transform: translate(-12px, -68vh) rotate(-4deg); }
+  75%  { transform: translate(14px, -100vh) rotate(4deg); }
+  100% { transform: translate(0, -132vh) rotate(-2deg); }
+}
+.splash-inner {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 0 24px; text-align: center;
+  animation: fadeUp 0.9s ease both 0.15s;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(26px); }
+  to   { opacity: 1; transform: none; }
+}
+.hero40 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(110px, 34vw, 170px);
+  line-height: 0.95;
+  background: linear-gradient(135deg, #EC4899 5%, #8B5CF6 55%, #F5C518 110%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 12px 26px rgba(139, 92, 246, 0.35));
+  animation: heroFloat 3.4s ease-in-out infinite;
+  margin-bottom: 6px;
+}
+@keyframes heroFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+#splash h1 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  font-size: clamp(1.7em, 7vw, 2.3em);
+  color: var(--plum);
+  margin-bottom: 10px;
+}
+#splash .subtitle {
+  font-size: 1.05em; font-weight: 600; color: #6B5388;
+  margin-bottom: 34px; max-width: 320px; line-height: 1.55;
+}
 #splash button {
-  background: white; border: 3px solid var(--gold); border-radius: 50px;
-  padding: 16px 40px; font-size: 1.2em; color: var(--dark); cursor: pointer;
-  font-weight: 600; box-shadow: 0 4px 15px rgba(255,215,0,0.3);
+  position: relative; overflow: hidden;
+  background: linear-gradient(135deg, var(--hotpink), var(--purple));
+  color: #fff; border: none; border-radius: 999px;
+  padding: 17px 46px; font-family: 'Nunito', sans-serif;
+  font-size: 1.15em; font-weight: 800; cursor: pointer;
+  box-shadow: 0 14px 34px rgba(236, 72, 153, 0.42);
   transition: transform 0.2s;
 }
 #splash button:active { transform: scale(0.95); }
-
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
+#splash button::after {
+  content: ''; position: absolute; top: 0; left: -60%;
+  width: 40%; height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,0.55), transparent);
+  animation: shine 3.2s ease infinite;
+}
+@keyframes shine {
+  0% { left: -60%; }
+  55%, 100% { left: 130%; }
 }
 
+/* ===== APP SHELL ===== */
 #app { display: none; height: 100vh; height: 100dvh; flex-direction: column; }
 #app.show { display: flex; }
 
 .header {
-  padding: calc(var(--safe-top) + 10px) 16px 10px;
-  background: linear-gradient(135deg, var(--peach), var(--lavender));
+  padding: calc(var(--safe-top) + 12px) 16px 12px;
+  background: linear-gradient(135deg, #FFDFF0, #E3D3FA);
   text-align: center;
   flex-shrink: 0;
+  box-shadow: 0 2px 14px rgba(139, 92, 246, 0.10);
 }
-.header h2 { font-size: 1.3em; color: var(--dark); }
+.header h2 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 700; font-size: 1.45em;
+  background: linear-gradient(135deg, #B03A88, #6D3FBF);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
 
 .tabs {
-  display: flex; background: white; border-bottom: 2px solid var(--peach);
+  display: flex; gap: 6px; padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.78);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(236, 72, 153, 0.12);
   flex-shrink: 0;
 }
 .tab {
-  flex: 1; padding: 12px 4px 10px; text-align: center; cursor: pointer;
-  font-size: 0.75em; font-weight: 600; color: #999; border-bottom: 3px solid transparent;
-  transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 2px;
+  flex: 1; min-width: 0; padding: 9px 4px 7px; text-align: center; cursor: pointer;
+  font-size: 0.75em; font-weight: 800; color: #A491BB;
+  border-radius: 16px; transition: all 0.25s;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
 }
-.tab.active { color: var(--dark); border-bottom-color: var(--coral); }
+.tab.active {
+  color: var(--plum);
+  background: linear-gradient(135deg, #FDE7F3, #EFE7FC);
+  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.16);
+}
 .tab-icon { font-size: 1.8em; }
+.tab span:last-child { font-size: 0.95em; letter-spacing: 0.04em; }
 
 .content {
   flex: 1; overflow-y: auto; overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
 }
 .page { display: none; height: 100%; }
-.page.active { display: flex; flex-direction: column; }
+.page.active { display: flex; flex-direction: column; animation: pageIn 0.35s ease; }
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
 
+/* ===== ALBUM ===== */
 .album-container {
   flex: 1; display: flex; flex-direction: column; align-items: center;
   justify-content: center; padding: 16px; position: relative;
 }
 .album-frame {
-  background: white; border-radius: 20px; padding: 12px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+  background: linear-gradient(#fff, #fff) padding-box,
+              linear-gradient(135deg, var(--pink), var(--lavender), var(--gold)) border-box;
+  border: 3px solid transparent;
+  border-radius: 24px; padding: 12px;
+  box-shadow: 0 16px 40px rgba(139, 92, 246, 0.18);
   max-width: 90%; position: relative; overflow: hidden;
 }
 .album-frame img {
-  width: 100%; border-radius: 12px; display: block;
+  width: 100%; border-radius: 14px; display: block;
   max-height: 55vh; object-fit: contain;
 }
 .album-caption {
-  text-align: center; padding: 10px 0 4px; font-size: 0.9em;
-  color: #7A6050; font-style: italic;
+  text-align: center; padding: 12px 4px 4px; font-size: 0.95em;
+  font-weight: 600; color: #7A5E96; font-style: italic;
 }
 .album-empty {
-  background: linear-gradient(135deg, #FFEFC2 0%, #EFC9E4 50%, #C9B8ED 100%);
-  border-radius: 20px; padding: 40px 30px; text-align: center;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.12); max-width: 320px;
-  font-size: 1.05em; line-height: 1.6; color: var(--dark);
+  background: linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)) padding-box,
+              linear-gradient(135deg, var(--pink), var(--lavender), var(--gold)) border-box;
+  border: 3px solid transparent;
+  border-radius: 24px; padding: 44px 32px; text-align: center;
+  box-shadow: 0 16px 40px rgba(139, 92, 246, 0.18); max-width: 320px;
+  font-size: 1.05em; font-weight: 600; line-height: 1.6; color: var(--ink);
 }
 .album-empty .big { font-size: 3em; display: block; margin-bottom: 12px; }
 .album-nav {
@@ -123,60 +216,76 @@ body {
   padding: 16px; flex-shrink: 0;
 }
 .album-btn {
-  width: 50px; height: 50px; border-radius: 50%; border: none;
-  background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  font-size: 1.5em; cursor: pointer; display: flex; align-items: center;
-  justify-content: center; transition: transform 0.2s;
+  width: 52px; height: 52px; border-radius: 50%; border: none;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 6px 18px rgba(236, 72, 153, 0.18);
+  font-size: 1.4em; color: var(--plum); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.2s;
 }
 .album-btn:active { transform: scale(0.9); }
-.album-counter { font-size: 0.9em; color: #999; font-weight: 600; min-width: 60px; text-align: center; }
+.album-counter { font-size: 0.9em; color: #A491BB; font-weight: 800; min-width: 60px; text-align: center; }
 .album-dots {
   display: flex; justify-content: center; gap: 6px; padding-bottom: 8px; flex-wrap: wrap;
   max-width: 300px; margin: 0 auto;
 }
 .album-dot {
-  width: 8px; height: 8px; border-radius: 50%; background: #ddd; transition: all 0.3s;
+  width: 8px; height: 8px; border-radius: 50%; background: #E8DCF2; transition: all 0.3s;
 }
-.album-dot.active { background: var(--coral); transform: scale(1.3); }
+.album-dot.active { background: var(--hotpink); transform: scale(1.35); }
 
+/* ===== GAME ===== */
 .game-container {
   flex: 1; display: flex; flex-direction: column; align-items: center;
-  justify-content: center; padding: 20px; gap: 16px;
+  justify-content: center; padding: 20px; gap: 18px;
 }
 .wheel-wrapper {
   position: relative; width: 300px; height: 300px;
 }
 .wheel-pointer {
-  position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
-  font-size: 2em; z-index: 10; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+  position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+  font-size: 2em; z-index: 10; color: var(--hotpink);
+  filter: drop-shadow(0 3px 6px rgba(236, 72, 153, 0.35));
 }
 .wheel-canvas {
   width: 300px; height: 300px;
   border-radius: 50%;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15), inset 0 0 0 8px white, 0 0 0 4px var(--gold);
+  box-shadow: 0 20px 46px rgba(139, 92, 246, 0.28),
+              inset 0 0 0 8px #fff,
+              0 0 0 4px var(--gold);
   transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
 }
 .spin-btn {
-  background: linear-gradient(135deg, var(--coral), #E76F51);
-  color: white; border: none; border-radius: 50px; padding: 16px 40px;
-  font-size: 1.2em; font-weight: 700; cursor: pointer;
-  box-shadow: 0 4px 15px rgba(255,127,127,0.4);
+  position: relative; overflow: hidden;
+  background: linear-gradient(135deg, var(--hotpink), var(--purple));
+  color: white; border: none; border-radius: 999px; padding: 16px 42px;
+  font-family: 'Nunito', sans-serif; font-size: 1.15em; font-weight: 800; cursor: pointer;
+  box-shadow: 0 12px 30px rgba(236, 72, 153, 0.4);
   transition: transform 0.2s;
 }
-.spin-btn:active { transform: scale(0.95); }
-.spin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.game-result {
-  background: white; border-radius: 20px; padding: 20px; text-align: center;
-  max-width: 90%; box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-  min-height: 80px; display: flex; align-items: center; justify-content: center;
-  font-size: 1em; line-height: 1.5; color: var(--dark);
+.spin-btn::after {
+  content: ''; position: absolute; top: 0; left: -60%;
+  width: 40%; height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,0.5), transparent);
+  animation: shine 3.4s ease infinite;
 }
-.game-result .emoji-big { font-size: 1.5em; display: block; margin-bottom: 8px; }
+.spin-btn:active { transform: scale(0.95); }
+.spin-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.game-result {
+  background: linear-gradient(rgba(255,255,255,0.94), rgba(255,255,255,0.94)) padding-box,
+              linear-gradient(135deg, var(--pink), var(--lavender)) border-box;
+  border: 2px solid transparent;
+  border-radius: 22px; padding: 20px 22px; text-align: center;
+  max-width: 90%; box-shadow: 0 10px 30px rgba(139, 92, 246, 0.14);
+  min-height: 84px; display: flex; align-items: center; justify-content: center;
+  font-size: 1em; font-weight: 600; line-height: 1.55; color: var(--ink);
+}
 .game-category {
-  font-size: 0.75em; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 1px; color: var(--coral); margin-bottom: 6px;
+  font-size: 0.72em; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 1.6px; color: var(--hotpink); margin-bottom: 7px;
 }
 
+/* ===== CONFETTI ===== */
 .confetti-piece {
   position: fixed; width: 10px; height: 10px; z-index: 999;
   animation: confettiFall 3s ease forwards;
@@ -187,64 +296,80 @@ body {
   100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
 }
 
+/* ===== FLOATING BACKGROUND ===== */
 .floating-bg {
   position: fixed; inset: 0; pointer-events: none; z-index: -1; overflow: hidden;
 }
 .floating-item {
-  position: absolute; font-size: 20px; opacity: 0.35;
-  animation: floatUp 20s linear infinite;
+  position: absolute; bottom: -10%; font-size: 20px; opacity: 0.32;
+  animation: rise linear infinite;
 }
-@keyframes floatUp {
-  0% { transform: translateY(110vh) rotate(0deg); }
-  100% { transform: translateY(-10vh) rotate(360deg); }
+.float40 {
+  font-family: 'Fraunces', Georgia, serif; font-weight: 700;
+  background: linear-gradient(135deg, var(--hotpink), var(--purple));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  opacity: 0.4;
 }
 
+/* ===== WISDOM ===== */
 .quotes-container {
-  display: flex; flex-direction: column; align-items: center; padding: 20px; gap: 20px;
+  display: flex; flex-direction: column; align-items: center; padding: 22px 20px; gap: 20px;
 }
 .quotes-deck {
   width: 100%; max-width: 340px;
 }
 .quote-card {
-  width: 100%; min-height: 280px; position: relative;
-  background: linear-gradient(135deg, #FFEFC2 0%, #EFC9E4 50%, #C9B8ED 100%);
-  border-radius: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+  width: 100%; min-height: 290px; position: relative;
+  background: linear-gradient(rgba(255,255,255,0.95), rgba(255,255,255,0.95)) padding-box,
+              linear-gradient(135deg, var(--pink), var(--lavender), var(--gold)) border-box;
+  border: 3px solid transparent;
+  border-radius: 26px; box-shadow: 0 18px 44px rgba(139, 92, 246, 0.18);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 30px; box-sizing: border-box;
+  padding: 40px 28px 30px; box-sizing: border-box;
+}
+.quote-card::before {
+  content: '\201C';
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 5.2em; line-height: 1;
+  color: rgba(236, 72, 153, 0.16);
+  position: absolute; top: 10px; left: 20px;
 }
 .quote-text {
-  font-size: 1.15em; font-style: italic; color: #4A3728;
-  line-height: 1.6; text-align: center; margin-bottom: 16px;
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500; font-style: italic;
+  font-size: 1.18em; color: var(--ink);
+  line-height: 1.6; text-align: center; margin-bottom: 18px;
   opacity: 1; transition: opacity 0.3s ease;
 }
 .quote-text.fade { opacity: 0; }
 .quote-source {
-  font-size: 0.85em; color: #8B7355; font-weight: 500;
+  font-size: 0.8em; color: #9B7FB8; font-weight: 800;
+  letter-spacing: 0.06em; text-transform: uppercase;
   text-align: center; opacity: 1; transition: opacity 0.3s ease;
 }
 .quote-source.fade { opacity: 0; }
 .quotes-controls {
-  display: flex; align-items: center; gap: 20px;
+  display: flex; align-items: center; gap: 18px;
 }
 .quote-btn {
-  background: #FFEFC2; border: none; padding: 10px 20px;
-  border-radius: 20px; font-size: 0.95em; color: #4A3728;
-  font-weight: 600; cursor: pointer;
+  background: var(--blush); border: none; padding: 11px 22px;
+  border-radius: 999px; font-family: 'Nunito', sans-serif;
+  font-size: 0.95em; color: var(--plum);
+  font-weight: 800; cursor: pointer;
+  box-shadow: 0 4px 14px rgba(236, 72, 153, 0.14);
 }
 .quote-btn:active { transform: scale(0.95); }
 .quote-counter {
-  font-size: 0.9em; color: #8B7355; font-weight: 500;
+  font-size: 0.9em; color: #A491BB; font-weight: 800;
 }
 .quote-shuffle-btn {
-  background: linear-gradient(135deg, #EFC9E4, #C9B8ED);
-  border: none; padding: 12px 28px; border-radius: 25px;
-  font-size: 1em; color: #4A3728; font-weight: 600;
-  cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  background: linear-gradient(135deg, var(--pink), var(--lavender));
+  border: none; padding: 13px 30px; border-radius: 999px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1em; color: var(--plum); font-weight: 800;
+  cursor: pointer; box-shadow: 0 8px 22px rgba(139, 92, 246, 0.22);
 }
 .quote-shuffle-btn:active { transform: scale(0.95); }
-
-.tab { flex: 1; min-width: 0; }
-.tab span:last-child { font-size: 0.7em; }
 </style>
 </head>
 <body>
@@ -252,10 +377,13 @@ body {
 <div class="floating-bg" id="floatingBg"></div>
 
 <div id="splash">
-  <div class="splash-emoji">&#x1F382;</div>
-  <h1>Happy 40th, Rumi! &#x1F49C;</h1>
-  <p class="subtitle">A little birthday gift with all our love &#x2728; and a sprinkle of Provence sunshine &#x2600;&#xFE0F;</p>
-  <button onclick="openApp()">Open Your Gift &#x1F381;</button>
+  <div class="splash-balloons" id="splashBalloons"></div>
+  <div class="splash-inner">
+    <div class="hero40">40</div>
+    <h1>Happy Birthday, Rumi! &#x1F49C;</h1>
+    <p class="subtitle">A little birthday gift with all our love &#x2728; and a sprinkle of Provence sunshine &#x2600;&#xFE0F;</p>
+    <button onclick="openApp()">Open Your Gift &#x1F381;</button>
+  </div>
 </div>
 
 <div id="app">
@@ -396,12 +524,12 @@ document.getElementById('page-album').addEventListener('touchend', e => {
 
 // ===== GAME =====
 const CATEGORIES = [
-  { name: "Would You Rather", color: "#EFC9E4", emoji: "🤔" },
-  { name: "Turning 40", color: "#DCEBC4", emoji: "🎂" },
-  { name: "Foodie", color: "#FFEFC2", emoji: "🍽️" },
-  { name: "World & Culture", color: "#BFE3F7", emoji: "🌍" },
-  { name: "Deep Dive", color: "#C9B8ED", emoji: "🔮" },
-  { name: "Quick Fire", color: "#F6D186", emoji: "⚡" },
+  { name: "Would You Rather", color: "#FFD1E3", emoji: "🤔" },
+  { name: "Turning 40", color: "#D9EFC9", emoji: "🎂" },
+  { name: "Foodie", color: "#FFE8B3", emoji: "🍽️" },
+  { name: "World & Culture", color: "#C7E6F7", emoji: "🌍" },
+  { name: "Deep Dive", color: "#DCC9F5", emoji: "🔮" },
+  { name: "Quick Fire", color: "#FFDCC2", emoji: "⚡" },
 ];
 
 const QUESTIONS = {
@@ -640,7 +768,7 @@ function spinWheel() {
 }
 
 function spawnConfetti() {
-  const colors = ['#EFC9E4', '#C9B8ED', '#DCEBC4', '#FFEFC2', '#F5C518', '#BFE3F7'];
+  const colors = ['#F9A8D4', '#EC4899', '#C9B8ED', '#8B5CF6', '#F5C518', '#FFD1E3', '#C7E6F7'];
   for (let i = 0; i < 30; i++) {
     const piece = document.createElement('div');
     piece.className = 'confetti-piece';
@@ -676,21 +804,43 @@ function openApp() {
 }
 
 function initFloatingBg() {
-  const emojis = ['🪻', '💜', '🌻', '🍋', '☀️', '🥐', '🎂', '✨', '🐇'];
+  const emojis = ['🎈', '🎈', '🎈', '🎂', '🎉', '✨', '💜', '🩷', '🪻', '🌻'];
   const bg = document.getElementById('floatingBg');
-  for (let i = 0; i < 15; i++) {
+  for (let i = 0; i < 18; i++) {
     const item = document.createElement('div');
     item.className = 'floating-item';
-    item.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    if (i % 5 === 4) {
+      item.classList.add('float40');
+      item.textContent = '40';
+    } else {
+      item.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    }
     item.style.left = Math.random() * 100 + '%';
     item.style.animationDelay = Math.random() * 20 + 's';
-    item.style.animationDuration = (15 + Math.random() * 15) + 's';
-    item.style.fontSize = (14 + Math.random() * 16) + 'px';
+    item.style.animationDuration = (16 + Math.random() * 16) + 's';
+    item.style.fontSize = (16 + Math.random() * 18) + 'px';
     bg.appendChild(item);
   }
 }
 
+function initSplashBalloons() {
+  const holder = document.getElementById('splashBalloons');
+  if (!holder) return;
+  const balloons = ['🎈', '🎈', '🩷', '💜', '🎈', '✨'];
+  for (let i = 0; i < 12; i++) {
+    const b = document.createElement('div');
+    b.className = 'splash-balloon';
+    b.textContent = balloons[Math.floor(Math.random() * balloons.length)];
+    b.style.left = Math.random() * 100 + '%';
+    b.style.animationDelay = (Math.random() * 8) + 's';
+    b.style.animationDuration = (9 + Math.random() * 8) + 's';
+    b.style.fontSize = (18 + Math.random() * 26) + 'px';
+    holder.appendChild(b);
+  }
+}
+
 initFloatingBg();
+initSplashBalloons();
 
 // ===== QUOTES =====
 const QUOTES = [
