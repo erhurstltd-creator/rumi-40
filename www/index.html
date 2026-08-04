@@ -458,9 +458,33 @@ body {
 <script>
 // Family photos go here as data URIs (added once Emma shares them), with one caption per photo.
 const PHOTOS = [
+  "https://raw.githubusercontent.com/erhurstltd-creator/rumi-40/main/www/photos/p01.jpg",
+  "https://raw.githubusercontent.com/erhurstltd-creator/rumi-40/main/www/photos/p02.jpg",
+  "https://raw.githubusercontent.com/erhurstltd-creator/rumi-40/main/www/photos/p03.jpg",
+  "https://raw.githubusercontent.com/erhurstltd-creator/rumi-40/main/www/photos/p04.jpg",
+  "https://raw.githubusercontent.com/erhurstltd-creator/rumi-40/main/www/photos/p05.jpg",
+  "https://raw.githubusercontent.com/erhurstltd-creator/rumi-40/main/www/photos/p06.jpg",
+  "https://raw.githubusercontent.com/erhurstltd-creator/rumi-40/main/www/photos/p07.jpg",
+  "https://raw.githubusercontent.com/erhurstltd-creator/rumi-40/main/www/photos/p08.jpg",
+  "https://raw.githubusercontent.com/erhurstltd-creator/rumi-40/main/www/photos/p09.jpg",
+  "https://raw.githubusercontent.com/erhurstltd-creator/rumi-40/main/www/photos/p10.jpg",
+  "https://raw.githubusercontent.com/erhurstltd-creator/rumi-40/main/www/photos/p11.jpg",
+  "https://raw.githubusercontent.com/erhurstltd-creator/rumi-40/main/www/photos/p12.jpg",
 ];
 
 const CAPTIONS = [
+  "New Year's Day 2005 — the pool squad 🏊‍♀️",
+  "2005: one biscuit, two smiles 🍪",
+  "Cake duty is a serious family business 🍰",
+  "Sunhats & sisterhood 👒",
+  "Five girls, one sun lounger. Perfect maths. 😄",
+  "Coconut o'clock in paradise 🥥",
+  "Drama clearly runs in the family 😱",
+  "Never too young for a shoe consultation 👠",
+  "Little hands, biggest love 💕",
+  "Party partners 🎀",
+  "Precious cargo 🧸",
+  "The best kind of hug 🤗",
 ];
 
 // Shuffle photo/caption pairs into a fresh order on every open
@@ -543,7 +567,7 @@ const QUESTIONS = {
     "Would you rather Nadiya inherits your laugh or your dance moves?",
     "Would you rather give up Cheetos forever or give up TV for a year?",
     "Would you rather eat only Cheetos for a week or do reformer pilates twice a day for a month?",
-    "Would you rather your pilates instructor moves in next door or a French bakery opens downstairs?",
+    "Would you rather live one week inside your favourite TV show or have its whole cast round for dinner?",
     "Would you rather binge one series forever or get one new episode of everything each week?",
     "Would you rather never rewatch your favourite show again or only ever rewatch it?",
     "Would you rather give up chocolate forever or give up cheese forever?",
@@ -556,7 +580,7 @@ const QUESTIONS = {
     "Would you rather be chased by one giant angry baguette or 100 tiny furious croissants?",
     "Would you rather have a lavender field or a sunflower field behind the house?",
     "Would you rather always hear the gossip a week late, or be the person everyone tells first — but you can't tell anyone?",
-    "Would you rather Sunday lunch with the whole family every week, or one big month-long family holiday a year?",
+    "Would you rather always be ten minutes late or always 40 minutes early?",
     "Would you rather be 40 forever or relive one year of your 30s on repeat?"
   ],
   "Turning 40": [
@@ -574,7 +598,7 @@ const QUESTIONS = {
     "If your 40s had a motto, what would it be?",
     "What's one thing you want to learn in your 40s?",
     "Who in your life always makes you laugh — and what's the classic story?",
-    "What family tradition do you hope Nadiya grows up loving?",
+    "What's a small habit that has quietly made your life better?",
     "What's the best meal you've eaten in 40 years — and who were you with?",
     "What song takes you straight back to being 18?",
     "What's a moment from this past year you'd bottle and keep?",
@@ -585,14 +609,14 @@ const QUESTIONS = {
     "What would be your 3 desert island condiments?",
     "Pick ONE drink for the rest of your life — hot or cold. That's it. Forever.",
     "One baked good for the rest of your life. Choose wisely.",
-    "French fries: eat ONLY fries forever, or never have a single fry again?",
+    "What's your ultimate midnight snack? Be honest.",
     "Cheetos: crunchy or puffs? Defend your answer like it matters. (It matters.)",
     "You can only save one: Cheetos or crisps. The other vanishes forever.",
     "What food do you secretly judge people for eating?",
     "What's a food you hated as a child but love now?",
     "If you opened a restaurant, what would it serve and what would you call it?",
     "What's the best thing you've ever eaten on a trip?",
-    "First thing you're ordering at a French café?",
+    "What's the best home-cooked meal anyone makes you — and who makes it?",
     "Rank these: croissant, pain au chocolat, baguette with salted butter, crêpe. Defend your answer.",
     "What French dish have you never tried but want to?",
     "Cheese course or dessert — you can only have one all week?",
@@ -603,7 +627,7 @@ const QUESTIONS = {
     "What's the one dish from Dar es Salaam you'd airlift to anywhere in the world?",
     "What's the dish that tastes like home?",
     "What food would Rafsy order at a restaurant? (Besides coriander, obviously.)",
-    "If Nadiya could only inherit one family recipe, which should it be?"
+    "Sweet or savoury breakfast — and defend your choice."
   ],
   "World & Culture": [
     "If you could only ever holiday in one country, which would it be?",
@@ -614,7 +638,7 @@ const QUESTIONS = {
     "What city surprised you the most when you visited?",
     "What's the best thing about life in Dar es Salaam that visitors never expect?",
     "Zanzibar beaches or lavender fields — which wins, honestly?",
-    "Where in the world would you take Rafsy on holiday if he could fly?",
+    "What's the friendliest place you've ever been?",
     "If you could time-travel to any era, when and where would you go?",
     "You can teleport somewhere just for dinner tonight, back by midnight. Where?",
     "You have to give a 10-minute talk with zero prep about one place. Which place?",
@@ -654,7 +678,7 @@ const QUESTIONS = {
     "What superpower would you most like to have?",
     "Beach or pool?",
     "Pain au chocolat or croissant? No saying both.",
-    "Name 3 French foods in 10 seconds. GO!",
+    "Name 3 things that always make you laugh. GO!",
     "Sunflowers or lavender?",
     "First thing you do on holiday: pool, fridge or nap?",
     "Best snack of all time? (Anyone answering 'not Cheetos' will be asked to leave.)",
@@ -662,13 +686,13 @@ const QUESTIONS = {
     "What's your karaoke song? No overthinking!",
     "If Rafsy wrote a memoir, what would the title be?",
     "What would Rafsy's French name be?",
-    "Rafsy's dream job: lavender farmer, market seller or boules hustler?",
-    "Nadiya's first proper word: place your bets NOW.",
+    "Rafsy in one word. GO!",
+    "Your go-to dance move: name it or show it. NOW!",
     "What will Nadiya be when she grows up? First answer only!",
     "Name 5 TV shows you've finished, in 15 seconds. GO!",
     "Reformer pilates or a massage — you can only keep one forever?",
-    "Market morning or lazy morning?",
-    "Croissant count for the week: what's your honest prediction?",
+    "Early bird or night owl?",
+    "Tea or coffee? First answer!",
     "One word for how you want your 40s to feel. GO!"
   ]
 };
