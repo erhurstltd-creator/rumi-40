@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rumi-40-v10';
+const CACHE_NAME = 'rumi-40-v11';
 
 const PRECACHE_URLS = [
   '/',
