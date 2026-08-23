@@ -605,18 +605,7 @@ const CAPTIONS = [
   "Graduation day pride 🎓",
 ];
 
-// Shuffle photo/caption pairs into a fresh order on every open
-(function() {
-  const order = [...PHOTOS.keys()];
-  for (let i = order.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [order[i], order[j]] = [order[j], order[i]];
-  }
-  const p = order.map(i => PHOTOS[i]);
-  const c = order.map(i => CAPTIONS[i]);
-  PHOTOS.length = 0; PHOTOS.push(...p);
-  CAPTIONS.length = 0; CAPTIONS.push(...c);
-})();
+// Album keeps a fixed order (photo 1..71) so numbering stays stable for everyone.
 
 // ===== ALBUM =====
 let currentPhoto = 0;
